@@ -1,6 +1,8 @@
 package domain;
 
-public class MovieTicket
+import java.time.LocalDateTime;
+
+public class MovieTicket implements Comparable<MovieTicket>
 {
     private MovieScreening movieScreening;
     private boolean isPremiumTicket;
@@ -30,9 +32,18 @@ public class MovieTicket
         return movieScreening.getPricePerSeat();
     }
 
+    public LocalDateTime getDateTime() {
+        return movieScreening.getDateAndTime();
+    }
+
     @Override
     public String toString() {
         return movieScreening.toString() + " - row " + seatRow + ", seat " + seatNr +
                 (isPremiumTicket ? " (Premium)" : "");
+    }
+
+    @Override
+    public int compareTo(MovieTicket o) {
+        return Double.compare(getPrice(), o.getPrice());
     }
 }

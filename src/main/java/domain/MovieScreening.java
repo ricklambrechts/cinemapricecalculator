@@ -24,6 +24,10 @@ public class MovieScreening
         return pricePerSeat;
     }
 
+    public LocalDateTime getDateAndTime() {
+        return dateAndTime;
+    }
+
     @Override
     public String toString() {
         return movie.getTitle() + " - " + dateAndTime;
