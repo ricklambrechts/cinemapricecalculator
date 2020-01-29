@@ -1,12 +1,15 @@
 package domain;
 
+import com.google.gson.annotations.Expose;
+
 import java.time.LocalDateTime;
 
 public class MovieScreening
 {
+    @Expose
     private Movie movie;
 
-    // LocalDate date = LocalDate.of(2000, Month.NOVEMBER, 20);
+    @Expose
     private LocalDateTime dateAndTime;
     private double pricePerSeat;
 

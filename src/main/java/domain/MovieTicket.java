@@ -1,13 +1,24 @@
 package domain;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.time.LocalDateTime;
 
 public class MovieTicket implements Comparable<MovieTicket>
 {
+
+    @Expose
     private MovieScreening movieScreening;
+
+    @Expose
+    @SerializedName("premiumTicket")
     private boolean isPremiumTicket;
 
+    @Expose
     private int seatRow;
+
+    @Expose
     private int seatNr;
 
     public MovieTicket(

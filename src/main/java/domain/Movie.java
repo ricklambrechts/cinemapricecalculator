@@ -1,9 +1,12 @@
 package domain;
 
+import com.google.gson.annotations.Expose;
+
 import java.util.ArrayList;
 
 public class Movie
 {
+    @Expose
     private String title;
     private ArrayList<MovieScreening> screenings;
 

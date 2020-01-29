@@ -1,6 +1,14 @@
 package domain;
 
+import com.google.gson.*;
+import com.google.gson.annotations.Expose;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.lang.reflect.Type;
 import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,9 +16,11 @@ import java.util.List;
 
 public class Order
 {
+    @Expose
     private int orderNr;
     private boolean isStudentOrder;
 
+    @Expose
     private ArrayList<MovieTicket> tickets;
 
     public Order(int orderNr, boolean isStudentOrder)
@@ -81,6 +91,48 @@ public class Order
         // Bases on the string respresentations of the tickets (toString), write
         // the ticket to a file with naming convention Order_<orderNr>.txt of
         // Order_<orderNr>.json
+
+        String fileName = "exports/Order_" + orderNr;
+
+        switch (exportFormat) {
+            case JSON: {
+                try {
+                    FileWriter fileWriter = new FileWriter(fileName + ".json");
+                    // Gson settings
+                    Gson gson = new GsonBuilder()
+                            .setPrettyPrinting()
+                            .excludeFieldsWithoutExposeAnnotation()
+                            .registerTypeAdapter(LocalDateTime.class, (JsonSerializer<LocalDateTime>) (LocalDateTime src, Type typeOfSrc, JsonSerializationContext context ) -> new JsonPrimitive(src.toString()))
+                            .serializeNulls()
+                            .disableHtmlEscaping()
+                            .create();
+
+                    // Tickets to json file
+                    gson.toJson(tickets, fileWriter);
+
+                    fileWriter.flush();
+                    fileWriter.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case PLAINTEXT: {
+                FileWriter fileWriter = null;
+                try {
+                    fileWriter = new FileWriter(fileName + ".txt");
+                    PrintWriter printWriter = new PrintWriter(fileWriter);
+                    for (MovieTicket movieTicket: tickets) {
+                        printWriter.println(movieTicket.toString());
+                    }
+                    printWriter.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
+
     }
 
     private int getFreeTicketCount(boolean isStudentOrder, ArrayList<MovieTicket> movieTickets)
@@ -113,7 +165,6 @@ public class Order
         }
 
         DayOfWeek[] weekendDays = new DayOfWeek[]{DayOfWeek.SATURDAY, DayOfWeek.SUNDAY};
-
         return getDayOfWeekTicketCount(tickets, weekendDays);
     }
 
@@ -137,11 +188,11 @@ public class Order
         }
 
         if(!isStudentOrder) {
-            // Een premium ticket is voor niet-studenten 3,- duurder dan de standaardprijs
+            // A premium ticket for non-students 3,- extra
             return 3;
         }
 
-        // Een premium ticket is voor studenten 2,- duurder dan de standaardprijs
+        // A premium ticket for students 2,- extra
         return 2;
     }
 }

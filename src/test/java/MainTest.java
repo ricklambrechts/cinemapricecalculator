@@ -1,7 +1,4 @@
-import domain.Movie;
-import domain.MovieScreening;
-import domain.MovieTicket;
-import domain.Order;
+import domain.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -32,6 +29,8 @@ public class MainTest {
 
         Double orderPrice = order.calculatePrice();
         System.out.println("Order Price: "+ orderPrice);
+
+        order.export(TicketExportFormat.JSON);
     }
 
 }
