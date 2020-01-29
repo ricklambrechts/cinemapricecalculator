@@ -55,7 +55,8 @@ public class Order
             }
 
             MovieTicket movieTicket = tickets.get(i);
-            double movieTicketPrice = movieTicket.getPrice() + getExtraTicketPrice(isStudentOrder, movieTicket.isPremiumTicket());
+            double movieTicketExtraPrice = getExtraTicketPrice(isStudentOrder, movieTicket.isPremiumTicket());
+            double movieTicketPrice = movieTicket.getPrice() + movieTicketExtraPrice;
 
             double discount = 0.0;
             // Check for weekendDayTickets if 6 or more
@@ -69,7 +70,7 @@ public class Order
             }
             price += movieTicketPrice;
 
-            System.out.println("Ticket " + i + ": Price " + movieTicket.getPrice() + " , Extra price: " + getExtraTicketPrice(isStudentOrder, movieTicket.isPremiumTicket()) + " , Discount: " + discount);
+            System.out.println("Ticket " + i + ": Price " + movieTicket.getPrice() + " , Extra price: " + movieTicketExtraPrice + " , Discount: " + discount);
         }
 
         return price;
