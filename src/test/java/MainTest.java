@@ -19,9 +19,9 @@ public class MainTest {
         MovieScreening movieScreening = new MovieScreening(movie, LocalDateTime.now().minusDays(3), 10);
         MovieScreening movieScreening1 = new MovieScreening(movie, LocalDateTime.now(), 10);
         MovieTicket movieTicket = new MovieTicket(movieScreening, false, 0, 0);
-        MovieTicket movieTicket1 = new MovieTicket(movieScreening1, false, 0, 0);
+        MovieTicket movieTicket1 = new MovieTicket(movieScreening1, true, 0, 0);
 
-        Order order = new Order(1, true);
+        Order order = new Order(1, false);
         order.addSeatReservation(movieTicket1);
         order.addSeatReservation(movieTicket);
         order.addSeatReservation(movieTicket);
