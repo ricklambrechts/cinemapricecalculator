@@ -14,7 +14,7 @@ public class Movie
     {
         this.title = title;
 
-        screenings = new ArrayList<MovieScreening>();
+        screenings = new ArrayList<>();
     }
 
     public String getTitle()
