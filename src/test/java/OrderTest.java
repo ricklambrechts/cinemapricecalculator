@@ -196,4 +196,54 @@ public class OrderTest {
         // Check if price equals
         Assertions.assertEquals(2, order.getOrderNr());
     }
+
+    @Test
+    public void premiumTicketTest() {
+        // Create movie screening of specific week day
+        MovieScreening movieScreening = new MovieScreening(movie, LocalDateTime.now().with(DayOfWeek.MONDAY), 10);
+
+        // Create movie tickets
+        MovieTicket movieTicket = new MovieTicket(movieScreening, true, 0, 0);
+
+        // Create order with movie tickets
+        Order order = new Order(1, true);
+        order.addSeatReservation(movieTicket);
+
+        // Check if price equals
+        Assertions.assertEquals(12.0, order.calculatePrice());
+    }
+
+    @Test
+    public void twoPremiumStudentTicketTest() {
+        // Create movie screening of specific week day
+        MovieScreening movieScreening = new MovieScreening(movie, LocalDateTime.now().with(DayOfWeek.MONDAY), 10);
+
+        // Create movie tickets
+        MovieTicket movieTicket = new MovieTicket(movieScreening, true, 0, 0);
+
+        // Create order with movie tickets
+        Order order = new Order(1, true);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket);
+
+        // Check if price equals
+        Assertions.assertEquals(12.0, order.calculatePrice());
+    }
+
+    @Test
+    public void twoPremiumTicketTest() {
+        // Create movie screening of specific week day
+        MovieScreening movieScreening = new MovieScreening(movie, LocalDateTime.now().with(DayOfWeek.MONDAY), 10);
+
+        // Create movie tickets
+        MovieTicket movieTicket = new MovieTicket(movieScreening, true, 0, 0);
+
+        // Create order with movie tickets
+        Order order = new Order(1, false);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket);
+
+        // Check if price equals
+        Assertions.assertEquals(13.0, order.calculatePrice());
+    }
 }
