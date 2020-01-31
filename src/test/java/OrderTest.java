@@ -58,4 +58,25 @@ public class OrderTest {
         }
     }
 
+    @Test
+    public void weekendGroupDiscountForNonStudents() {
+        // Create movie screening of specific week day
+        MovieScreening movieScreening = new MovieScreening(movie, LocalDateTime.now().with(DayOfWeek.SATURDAY), 10);
+
+        // Create movie tickets
+        MovieTicket movieTicket = new MovieTicket(movieScreening, false, 0, 0);
+
+        // Create order with movie tickets
+        Order order = new Order(1, false);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket);
+
+        // Check if price equals
+        Assertions.assertEquals(54.0, order.calculatePrice());
+    }
+
 }
