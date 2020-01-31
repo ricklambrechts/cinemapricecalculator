@@ -100,62 +100,38 @@ public class Order
 
         String fileName = "exports/Order_" + orderNr;
 
-        switch (exportFormat) {
-            case JSON: {
-                FileWriter fileWriter = null;
-                try {
-                    fileWriter = new FileWriter(fileName + ".json");
-                    // Gson settings
-                    Gson gson = new GsonBuilder()
-                            .setPrettyPrinting()
-                            .excludeFieldsWithoutExposeAnnotation()
-                            .registerTypeAdapter(LocalDateTime.class, (JsonSerializer<LocalDateTime>) (LocalDateTime src, Type typeOfSrc, JsonSerializationContext context ) -> new JsonPrimitive(src.toString()))
-                            .serializeNulls()
-                            .disableHtmlEscaping()
-                            .create();
+        FileWriter fileWriter = null;
+        try {
+            if(exportFormat == TicketExportFormat.JSON) {
+                fileWriter = new FileWriter(fileName + ".json");
+                // Gson settings
+                Gson gson = new GsonBuilder()
+                        .setPrettyPrinting()
+                        .excludeFieldsWithoutExposeAnnotation()
+                        .registerTypeAdapter(LocalDateTime.class, (JsonSerializer<LocalDateTime>) (LocalDateTime src, Type typeOfSrc, JsonSerializationContext context ) -> new JsonPrimitive(src.toString()))
+                        .serializeNulls()
+                        .disableHtmlEscaping()
+                        .create();
 
-                    // Tickets to json file
-                    gson.toJson(tickets, fileWriter);
+                // Tickets to json file
+                gson.toJson(tickets, fileWriter);
 
-                    fileWriter.flush();
-                    fileWriter.close();
-                } catch (IOException e) {
-                    logger.log(Level.WARNING, "Could not open json file", e);
-                } finally {
-                    if (fileWriter != null) {
-                        try {
-                            fileWriter.close();
-                        } catch (IOException e) {
-                            logger.log(Level.WARNING, "Could not close filewriter", e);
-                        }
-                    }
+                fileWriter.flush();
+                fileWriter.close();
+            } else {
+                fileWriter = new FileWriter(fileName + ".txt");
+                PrintWriter printWriter = new PrintWriter(fileWriter);
+                for (MovieTicket movieTicket: tickets) {
+                    printWriter.println(movieTicket.toString());
                 }
-                break;
+                printWriter.close();
+                fileWriter.flush();
+                fileWriter.close();
             }
-            case PLAINTEXT: {
-                FileWriter fileWriter = null;
-                try {
-                    fileWriter = new FileWriter(fileName + ".txt");
-                    PrintWriter printWriter = new PrintWriter(fileWriter);
-                    for (MovieTicket movieTicket: tickets) {
-                        printWriter.println(movieTicket.toString());
-                    }
-                    printWriter.close();
-                } catch (IOException e) {
-                    logger.log(Level.WARNING, "Could not open plaintext file", e);
-                } finally {
-                    if (fileWriter != null) {
-                        try {
-                            fileWriter.close();
-                        } catch (IOException e) {
-                            logger.log(Level.WARNING, "Could not close filewriter", e);
-                        }
-                    }
-                }
-                break;
-            }
+
+        } catch (IOException e) {
+            logger.log(Level.WARNING, "Could not open json file", e);
         }
-
     }
 
     private int getFreeTicketCount(boolean isStudentOrder, ArrayList<MovieTicket> movieTickets)
