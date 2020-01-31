@@ -13,9 +13,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 public class Order
 {
+    static final Logger logger = LogManager.getLogManager().getLogger(Order.class.getName());
+
     @Expose
     private int orderNr;
     private boolean isStudentOrder;
@@ -41,6 +46,11 @@ public class Order
         tickets.add(ticket);
     }
 
+    /**
+     * This function will calculate the order price
+     * To check the price buildup you could use // System.out.println("Ticket " + i + ": Price " + movieTicket.getPrice() + " , Extra price: " + movieTicketExtraPrice + " , Discount: " + discount);
+     * @return
+     */
     public double calculatePrice()
     {
         // Check if tickets is empty
@@ -68,19 +78,15 @@ public class Order
             double movieTicketExtraPrice = getExtraTicketPrice(isStudentOrder, movieTicket.isPremiumTicket());
             double movieTicketPrice = movieTicket.getPrice() + movieTicketExtraPrice;
 
-            double discount = 0.0;
             // Check for weekendDayTickets if 6 or more
             if(weekendDayDiscountTicketsCount >= 6) {
                 DayOfWeek dayOfWeek = DayOfWeek.from(movieTicket.getDateTime());
                 // Check if day of week is saturday of sunday
                 if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
-                    discount = movieTicketPrice / 100 * 10;
-                    movieTicketPrice -= discount;
+                    movieTicketPrice -= movieTicketPrice / 100 * 10;
                 }
             }
             price += movieTicketPrice;
-
-            // System.out.println("Ticket " + i + ": Price " + movieTicket.getPrice() + " , Extra price: " + movieTicketExtraPrice + " , Discount: " + discount);
         }
 
         return price;
@@ -113,7 +119,7 @@ public class Order
                     fileWriter.flush();
                     fileWriter.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.log(Level.WARNING, "Could not open json file", e);
                 }
                 break;
             }
@@ -127,7 +133,7 @@ public class Order
                     }
                     printWriter.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.log(Level.WARNING, "Could not open plaintext file", e);
                 }
                 break;
             }
