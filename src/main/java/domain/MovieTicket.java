@@ -47,13 +47,18 @@ public class MovieTicket
         return movieScreening.getDateAndTime();
     }
 
-    @Override
-    public String toString() {
-        return movieScreening.toString() + " - row " + seatRow + ", seat " + seatNr +
-                (isPremiumTicket ? " (Premium)" : "");
+    public MovieScreening getMovieScreening()
+    {
+        return movieScreening;
     }
 
     public int comparePriceTo(MovieTicket o) {
         return Double.compare(getPrice(), o.getPrice());
+    }
+
+    @Override
+    public String toString() {
+        return movieScreening.toString() + " - row " + seatRow + ", seat " + seatNr +
+                (isPremiumTicket ? " (Premium)" : "");
     }
 }
