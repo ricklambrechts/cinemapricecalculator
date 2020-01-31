@@ -59,7 +59,7 @@ public class OrderTest {
     }
 
     @Test
-    public void weekendGroupDiscountForNonStudents() {
+    public void saturdayWeekendGroupDiscountForNonStudentsTest() {
         // Create movie screening of specific week day
         MovieScreening movieScreening = new MovieScreening(movie, LocalDateTime.now().with(DayOfWeek.SATURDAY), 10);
 
@@ -79,4 +79,65 @@ public class OrderTest {
         Assertions.assertEquals(54.0, order.calculatePrice());
     }
 
+    @Test
+    public void sundayWeekendGroupDiscountForNonStudentsTest() {
+        // Create movie screening of specific week day
+        MovieScreening movieScreening = new MovieScreening(movie, LocalDateTime.now().with(DayOfWeek.SUNDAY), 10);
+
+        // Create movie tickets
+        MovieTicket movieTicket = new MovieTicket(movieScreening, false, 0, 0);
+
+        // Create order with movie tickets
+        Order order = new Order(1, false);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket);
+
+        // Check if price equals
+        Assertions.assertEquals(54.0, order.calculatePrice());
+    }
+
+    @Test
+    public void weekendGroupDiscountForNonStudentsTest() {
+        // Create movie screening of specific week day
+        MovieScreening movieScreening = new MovieScreening(movie, LocalDateTime.now().with(DayOfWeek.SATURDAY), 10);
+        MovieScreening movieScreening2 = new MovieScreening(movie, LocalDateTime.now().with(DayOfWeek.SUNDAY), 10);
+
+        // Create movie tickets
+        MovieTicket movieTicket = new MovieTicket(movieScreening, false, 0, 0);
+        MovieTicket movieTicket2 = new MovieTicket(movieScreening2, false, 0, 0);
+
+        // Create order with movie tickets
+        Order order = new Order(1, false);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket2);
+        order.addSeatReservation(movieTicket2);
+        order.addSeatReservation(movieTicket2);
+
+        // Check if price equals
+        Assertions.assertEquals(54.0, order.calculatePrice());
+    }
+
+    @Test
+    public void orderNumber1Test() {
+        // Create order with movie tickets
+        Order order = new Order(1, false);
+
+        // Check if price equals
+        Assertions.assertEquals(1, order.getOrderNr());
+    }
+
+    @Test
+    public void orderNumber2Test() {
+        // Create order with movie tickets
+        Order order = new Order(2, false);
+
+        // Check if price equals
+        Assertions.assertEquals(2, order.getOrderNr());
+    }
 }

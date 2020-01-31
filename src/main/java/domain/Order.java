@@ -80,7 +80,7 @@ public class Order
             }
             price += movieTicketPrice;
 
-            System.out.println("Ticket " + i + ": Price " + movieTicket.getPrice() + " , Extra price: " + movieTicketExtraPrice + " , Discount: " + discount);
+            // System.out.println("Ticket " + i + ": Price " + movieTicket.getPrice() + " , Extra price: " + movieTicketExtraPrice + " , Discount: " + discount);
         }
 
         return price;
