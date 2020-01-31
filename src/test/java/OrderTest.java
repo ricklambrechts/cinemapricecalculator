@@ -124,6 +124,62 @@ public class OrderTest {
     }
 
     @Test
+    public void weekendGroupDiscountForNonStudentsWithExtraWeekDayTicketTest() {
+        // Create movie screening of specific week day
+        MovieScreening movieScreening = new MovieScreening(movie, LocalDateTime.now().with(DayOfWeek.SATURDAY), 10);
+        MovieScreening movieScreening2 = new MovieScreening(movie, LocalDateTime.now().with(DayOfWeek.SUNDAY), 10);
+        MovieScreening movieScreening3 = new MovieScreening(movie, LocalDateTime.now().with(DayOfWeek.MONDAY), 10);
+
+        // Create movie tickets
+        MovieTicket movieTicket = new MovieTicket(movieScreening, false, 0, 0);
+        MovieTicket movieTicket2 = new MovieTicket(movieScreening2, false, 0, 0);
+        MovieTicket movieTicket3 = new MovieTicket(movieScreening3, false, 0, 0);
+
+        // Create order with movie tickets
+        Order order = new Order(1, false);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket2);
+        order.addSeatReservation(movieTicket2);
+        order.addSeatReservation(movieTicket2);
+        order.addSeatReservation(movieTicket3);
+
+        // Check if price equals
+        Assertions.assertEquals(64.0, order.calculatePrice());
+    }
+
+    @Test
+    public void weekendGroupDiscountForNonStudentsWithExtraWeekDayTicketSecondTicketFreeTest() {
+        // Create movie screening of specific week day
+        MovieScreening movieScreening = new MovieScreening(movie, LocalDateTime.now().with(DayOfWeek.SATURDAY), 10);
+        MovieScreening movieScreening2 = new MovieScreening(movie, LocalDateTime.now().with(DayOfWeek.SUNDAY), 10);
+        MovieScreening movieScreening3 = new MovieScreening(movie, LocalDateTime.now().with(DayOfWeek.MONDAY), 10);
+        MovieScreening movieScreening4 = new MovieScreening(movie, LocalDateTime.now().with(DayOfWeek.TUESDAY), 10);
+
+        // Create movie tickets
+        MovieTicket movieTicket = new MovieTicket(movieScreening, false, 0, 0);
+        MovieTicket movieTicket2 = new MovieTicket(movieScreening2, false, 0, 0);
+        MovieTicket movieTicket3 = new MovieTicket(movieScreening3, false, 0, 0);
+        MovieTicket movieTicket4 = new MovieTicket(movieScreening4, false, 0, 0);
+
+        // Create order with movie tickets
+        Order order = new Order(1, false);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket2);
+        order.addSeatReservation(movieTicket2);
+        order.addSeatReservation(movieTicket2);
+        order.addSeatReservation(movieTicket3);
+        order.addSeatReservation(movieTicket4);
+
+        // Check if price equals
+        // Cheapest ticket is free. So the 9 euro ticket is free, not the 10 euro one.
+        Assertions.assertEquals(65.0, order.calculatePrice());
+    }
+
+    @Test
     public void orderNumber1Test() {
         // Create order with movie tickets
         Order order = new Order(1, false);

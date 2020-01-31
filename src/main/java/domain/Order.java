@@ -47,12 +47,13 @@ public class Order
 
     /**
      * This function will calculate the order price
-     * To check the price buildup you could use // System.out.println("Ticket " + i + ": Price " + movieTicket.getPrice() + " , Extra price: " + movieTicketExtraPrice + " , Discount: " + discount);
+     * To check the price buildup you could use // System.out.println("Ticket " + i + ": Price " + movieTicketPrice + " , Extra price: " + movieTicketExtraPrice + " , Discount: " + movieTicket.getPrice() / 100 * 10);
      * @return double Price in double
      */
     public double calculatePrice()
     {
         // Check if tickets is empty
+        // A
         if(tickets.isEmpty()) {
             return 0.0;
         }
@@ -67,6 +68,7 @@ public class Order
         int ticketsCount = tickets.size();
 
         // Calculate price
+        // B
         for (int i = 0; i < ticketsCount; i++) {
             // If there are free tickets. Don't calculate tickets in price so continue.
             if(i < freeTicketsCount) {
