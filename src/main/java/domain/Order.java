@@ -7,10 +7,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Type;
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -23,6 +21,8 @@ public class Order
     @Expose
     private int orderNr;
     private boolean isStudentOrder;
+    private int freeTicketsCount;
+    private int discountTicketsCount;
 
     @Expose
     private ArrayList<MovieTicket> tickets;
@@ -43,6 +43,38 @@ public class Order
     public void addSeatReservation(MovieTicket ticket)
     {
         tickets.add(ticket);
+        updateCounters(ticket);
+    }
+
+    private void updateCounters(MovieTicket movieTicket)
+    {
+        updateFreeTicketsCounter(movieTicket);
+        updateDiscountTicketsCounter(movieTicket);
+    }
+
+    private void updateFreeTicketsCounter(MovieTicket movieTicket) {
+        if(isStudentOrder) {
+            freeTicketsCount = calculateFreeTicketCount(tickets.size());
+            return;
+        }
+
+        MovieScreening movieScreening = movieTicket.getMovieScreening();
+        if(movieScreening != null && movieScreening.isOnMonTroughThuDays()) {
+            // If movie on (mon/tue/wed/thu) then every 2'nd ticket is free.
+            freeTicketsCount = calculateFreeTicketCount(getWeeklyDayTicketCount(tickets));
+        }
+    }
+
+    private void updateDiscountTicketsCounter(MovieTicket movieTicket) {
+        if(isStudentOrder) {
+            discountTicketsCount = 0;
+            return;
+        }
+
+        MovieScreening movieScreening = movieTicket.getMovieScreening();
+        if(movieScreening != null && movieScreening.isOnWeekendDays()) {
+            discountTicketsCount = getWeekendDayTicketCount(tickets);
+        }
     }
 
     /**
@@ -63,13 +95,10 @@ public class Order
 
         // Hold variables
         double price = 0.0;
-        int freeTicketsCount = getFreeTicketCount(isStudentOrder, tickets);
-        int weekendDayDiscountTicketsCount = getWeekendDayTicketCount(isStudentOrder, tickets);
-        int ticketsCount = tickets.size();
 
         // Calculate price
         // B
-        for (int i = 0; i < ticketsCount; i++) {
+        for (int i = 0; i < tickets.size(); i++) {
             // If there are free tickets. Don't calculate tickets in price so continue.
             if(i < freeTicketsCount) {
                 continue;
@@ -80,12 +109,10 @@ public class Order
             double movieTicketPrice = movieTicket.getPrice() + movieTicketExtraPrice;
 
             // Check for weekendDayTickets if 6 or more
-            if(weekendDayDiscountTicketsCount >= 6) {
-                DayOfWeek dayOfWeek = DayOfWeek.from(movieTicket.getDateTime());
-                // Check if day of week is saturday of sunday
-                if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
-                    movieTicketPrice -= movieTicketPrice / 100 * 10;
-                }
+            // C
+            MovieScreening movieScreening = movieTicket.getMovieScreening();
+            if(discountTicketsCount >= 6 && movieScreening != null && movieScreening.isOnWeekendDays()) {
+                movieTicketPrice -= movieTicketPrice / 100 * 10;
             }
             price += movieTicketPrice;
         }
@@ -131,19 +158,6 @@ public class Order
         }
     }
 
-    private int getFreeTicketCount(boolean isStudentOrder, ArrayList<MovieTicket> movieTickets)
-    {
-        // Calculate free tickets, every 2'nd ticket is free for students
-        if(isStudentOrder) {
-            return calculateFreeTicketCount(movieTickets.size());
-        }
-
-        // If movie on (mon/tue/wed/thu) then every 2'nd ticket is free.
-        int weeklyDayTicketCount = getWeeklyDayTicketCount(movieTickets);
-
-        return calculateFreeTicketCount(weeklyDayTicketCount);
-    }
-
     private int calculateFreeTicketCount(int ticketCount)
     {
         return (int) Math.floor((double) ticketCount / 2);
@@ -151,33 +165,34 @@ public class Order
 
     private int getWeeklyDayTicketCount(List<MovieTicket> tickets)
     {
-        DayOfWeek[] weeklyDays = new DayOfWeek[]{DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY};
-        return getDayOfWeekTicketCount(tickets, weeklyDays);
-    }
-
-    private int getWeekendDayTicketCount(boolean isStudentOrder, List<MovieTicket> tickets) {
-        if(isStudentOrder) {
-            return 0;
-        }
-
-        DayOfWeek[] weekendDays = new DayOfWeek[]{DayOfWeek.SATURDAY, DayOfWeek.SUNDAY};
-        return getDayOfWeekTicketCount(tickets, weekendDays);
-    }
-
-    private int getDayOfWeekTicketCount(List<MovieTicket> tickets, DayOfWeek[] daysOfWeek) {
-        List<DayOfWeek> daysOfWeekList = Arrays.asList(daysOfWeek);
-
         int dayOfWeekTickets = 0;
         for(MovieTicket movieTicket: tickets) {
-            DayOfWeek dayOfWeek = DayOfWeek.from(movieTicket.getDateTime());
-            // Check if dayOfWeek is in list of days of week
-            if(daysOfWeekList.contains(dayOfWeek)) {
+            MovieScreening movieScreening = movieTicket.getMovieScreening();
+            if(movieScreening != null && movieScreening.isOnMonTroughThuDays()) {
                 dayOfWeekTickets++;
             }
         }
         return dayOfWeekTickets;
     }
 
+    private int getWeekendDayTicketCount(List<MovieTicket> tickets) {
+        int dayOfWeekTickets = 0;
+        for(MovieTicket movieTicket: tickets) {
+            MovieScreening movieScreening = movieTicket.getMovieScreening();
+            if(movieScreening != null && movieScreening.isOnWeekendDays()) {
+                dayOfWeekTickets++;
+            }
+        }
+        return dayOfWeekTickets;
+    }
+
+    /**
+     * This function returns the extra price of an premium ticket
+     * TODO: Move logic to MovieTicket (Because it is ticket logic)
+     * @param isStudentOrder boolean
+     * @param isPremiumTicket boolean
+     * @return int Extra price
+     */
     private int getExtraTicketPrice(boolean isStudentOrder, boolean isPremiumTicket) {
         if(!isPremiumTicket) {
             return 0;
