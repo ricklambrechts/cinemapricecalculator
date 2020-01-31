@@ -40,10 +40,16 @@ public class MovieTicket
 
     public double getPrice()
     {
+        if(movieScreening == null) {
+            return 0.0;
+        }
         return movieScreening.getPricePerSeat();
     }
 
     public LocalDateTime getDateTime() {
+        if(movieScreening == null) {
+            return LocalDateTime.MIN;
+        }
         return movieScreening.getDateAndTime();
     }
 

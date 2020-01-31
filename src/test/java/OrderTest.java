@@ -246,4 +246,32 @@ public class OrderTest {
         // Check if price equals
         Assertions.assertEquals(13.0, order.calculatePrice());
     }
+
+    @Test
+    public void emptyMovieScreeningTest() {
+        // Create movie tickets
+        MovieTicket movieTicket = new MovieTicket(null, false, 0, 0);
+
+        // Create order with movie tickets
+        Order order = new Order(1, false);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket);
+
+        // Check if price equals
+        Assertions.assertEquals(0.0, order.calculatePrice());
+    }
+
+    @Test
+    public void emptyMovieScreeningPremiumTicketsTest() {
+        // Create movie tickets
+        MovieTicket movieTicket = new MovieTicket(null, true, 0, 0);
+
+        // Create order with movie tickets
+        Order order = new Order(1, false);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket);
+
+        // Check if price equals
+        Assertions.assertEquals(6.0, order.calculatePrice());
+    }
 }
