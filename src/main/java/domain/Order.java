@@ -101,10 +101,7 @@ public class Order
         String fileName = "exports/Order_" + orderNr;
         String extension = (exportFormat == TicketExportFormat.JSON ? ".json" : ".txt");
 
-        FileWriter fileWriter = null;
-        try {
-            fileWriter = new FileWriter(extension);
-
+        try (FileWriter fileWriter = new FileWriter(fileName + extension)) {
             if(exportFormat == TicketExportFormat.JSON) {
                 // Gson settings
                 Gson gson = new GsonBuilder()
@@ -129,12 +126,8 @@ public class Order
             }
             printWriter.close();
             fileWriter.flush();
-            fileWriter.close();
-
         } catch (IOException e) {
             logger.log(Level.WARNING, "Could not open json file", e);
-        } finally {
-            ExportUtil.CloseFileWriterQuietly(fileWriter);
         }
     }
 
