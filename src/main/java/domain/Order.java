@@ -2,6 +2,7 @@ package domain;
 
 import com.google.gson.*;
 import com.google.gson.annotations.Expose;
+import util.ExportUtil;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -98,11 +99,13 @@ public class Order
         // Order_<orderNr>.json
 
         String fileName = "exports/Order_" + orderNr;
+        String extension = (exportFormat == TicketExportFormat.JSON ? ".json" : ".txt");
 
         FileWriter fileWriter = null;
         try {
+            fileWriter = new FileWriter(extension);
+
             if(exportFormat == TicketExportFormat.JSON) {
-                fileWriter = new FileWriter(fileName + ".json");
                 // Gson settings
                 Gson gson = new GsonBuilder()
                         .setPrettyPrinting()
@@ -117,19 +120,21 @@ public class Order
 
                 fileWriter.flush();
                 fileWriter.close();
-            } else {
-                fileWriter = new FileWriter(fileName + ".txt");
-                PrintWriter printWriter = new PrintWriter(fileWriter);
-                for (MovieTicket movieTicket: tickets) {
-                    printWriter.println(movieTicket.toString());
-                }
-                printWriter.close();
-                fileWriter.flush();
-                fileWriter.close();
+                return;
             }
+
+            PrintWriter printWriter = new PrintWriter(fileWriter);
+            for (MovieTicket movieTicket: tickets) {
+                printWriter.println(movieTicket.toString());
+            }
+            printWriter.close();
+            fileWriter.flush();
+            fileWriter.close();
 
         } catch (IOException e) {
             logger.log(Level.WARNING, "Could not open json file", e);
+        } finally {
+            ExportUtil.CloseFileWriterQuietly(fileWriter);
         }
     }
 
