@@ -11,7 +11,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -49,7 +48,7 @@ public class Order
     /**
      * This function will calculate the order price
      * To check the price buildup you could use // System.out.println("Ticket " + i + ": Price " + movieTicket.getPrice() + " , Extra price: " + movieTicketExtraPrice + " , Discount: " + discount);
-     * @return
+     * @return double Price in double
      */
     public double calculatePrice()
     {
@@ -59,7 +58,7 @@ public class Order
         }
 
         // Sort movie tickets so that the cheapest tickets are in front of array
-        Collections.sort(tickets);
+        tickets.sort(MovieTicket::comparePriceTo);
 
         // Hold variables
         double price = 0.0;
