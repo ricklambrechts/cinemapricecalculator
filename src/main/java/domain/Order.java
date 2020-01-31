@@ -102,8 +102,9 @@ public class Order
 
         switch (exportFormat) {
             case JSON: {
+                FileWriter fileWriter = null;
                 try {
-                    FileWriter fileWriter = new FileWriter(fileName + ".json");
+                    fileWriter = new FileWriter(fileName + ".json");
                     // Gson settings
                     Gson gson = new GsonBuilder()
                             .setPrettyPrinting()
@@ -120,6 +121,14 @@ public class Order
                     fileWriter.close();
                 } catch (IOException e) {
                     logger.log(Level.WARNING, "Could not open json file", e);
+                } finally {
+                    if (fileWriter != null) {
+                        try {
+                            fileWriter.close();
+                        } catch (IOException e) {
+                            logger.log(Level.WARNING, "Could not close filewriter", e);
+                        }
+                    }
                 }
                 break;
             }
@@ -134,6 +143,14 @@ public class Order
                     printWriter.close();
                 } catch (IOException e) {
                     logger.log(Level.WARNING, "Could not open plaintext file", e);
+                } finally {
+                    if (fileWriter != null) {
+                        try {
+                            fileWriter.close();
+                        } catch (IOException e) {
+                            logger.log(Level.WARNING, "Could not close filewriter", e);
+                        }
+                    }
                 }
                 break;
             }
