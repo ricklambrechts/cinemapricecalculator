@@ -20,6 +20,17 @@ public class OrderTest {
     }
 
     /**
+     * This test will test the empty order price
+     */
+    @Test
+    public void emptyOrder() {
+        // Create order
+        Order order = new Order(1, true);
+        // Check if price equals
+        Assertions.assertEquals(0.0, order.calculatePrice());
+    }
+
+    /**
      * This test will test if every second ticket is free for students
      */
     @Test
