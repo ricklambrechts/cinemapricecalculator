@@ -2,7 +2,6 @@ package domain;
 
 import com.google.gson.*;
 import com.google.gson.annotations.Expose;
-import util.ExportUtil;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -116,7 +115,6 @@ public class Order
                 gson.toJson(tickets, fileWriter);
 
                 fileWriter.flush();
-                fileWriter.close();
                 return;
             }
 
