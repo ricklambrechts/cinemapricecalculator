@@ -180,6 +180,28 @@ public class OrderTest {
     }
 
     @Test
+    public void weekendGroupDiscountForNonStudents5TicketsTest() {
+        // Create movie screening of specific week day
+        MovieScreening movieScreening = new MovieScreening(movie, LocalDateTime.now().with(DayOfWeek.SATURDAY), 10);
+        MovieScreening movieScreening2 = new MovieScreening(movie, LocalDateTime.now().with(DayOfWeek.SUNDAY), 10);
+
+        // Create movie tickets
+        MovieTicket movieTicket = new MovieTicket(movieScreening, false, 0, 0);
+        MovieTicket movieTicket2 = new MovieTicket(movieScreening2, false, 0, 0);
+
+        // Create order with movie tickets
+        Order order = new Order(1, false);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket);
+        order.addSeatReservation(movieTicket2);
+        order.addSeatReservation(movieTicket2);
+
+        // Check if price equals
+        Assertions.assertEquals(50.0, order.calculatePrice());
+    }
+
+    @Test
     public void orderNumber1Test() {
         // Create order with movie tickets
         Order order = new Order(1, false);
