@@ -317,4 +317,57 @@ public class OrderTest {
         // Check if price equals
         Assertions.assertEquals(6.0, order.calculatePrice());
     }
+
+//    @Test
+//    public void exportTest() throws Exception {
+//        // Create movie screening of specific week day
+//        MovieScreening movieScreening = new MovieScreening(movie, LocalDateTime.now().with(DayOfWeek.MONDAY), 10);
+//
+//        // Create movie tickets
+//        MovieTicket movieTicket = new MovieTicket(movieScreening, false, 0, 0);
+//
+//        // Create order with movie tickets
+//        // Order order = new Order(1, false);
+//        Order order = orderFixture;
+//        order.addSeatReservation(movieTicket);
+//        order.addSeatReservation(movieTicket);
+//
+//        // PrintWriter printWriter = mock(PrintWriter.class, CALLS_REAL_METHODS);
+//        // FileWriter fileWriter = mock(FileWriter.class, CALLS_REAL_METHODS);
+//
+//        whenNew(FileWriter.class)
+//                .withArguments(anyString())
+//                .thenReturn(fileWriter);
+//
+//        whenNew(PrintWriter.class)
+//                .withArguments(fileWriter)
+//                .thenReturn(printWriter);
+//
+//        // Mockito.doNothing().when(printWriter).println(anyString());
+//        Mockito.doNothing().when(printWriter).close();
+//        Mockito.doNothing().when(fileWriter).flush();
+//        // when(fileWriter, "flush").thenReturn(true);
+//
+//
+//        order.export(TicketExportFormat.PLAINTEXT);
+//
+//        verify(printWriter).println(anyString());
+//        // Mockito.verify(fileWriter).flush();
+//
+//
+//        // GsonBuilder gsonBuilder = PowerMockito.mock(GsonBuilder.class);
+//        // Gson gson = PowerMockito.mock(Gson.class);
+//
+//        // when(printWriter.println(any())).thenReturn(null);
+//        // when(printWriter.println()).
+//
+//
+//        // Mockito.verify(gson).toJson(null, fileWriter);
+//        // Mockito.verify(printWriter).close();
+//        // Mockito.verify(fileWriter).flush();
+////        Mockito.verify(gson.toJson());
+//
+//        // PowerMockito
+//
+//    }
 }

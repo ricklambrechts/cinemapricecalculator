@@ -1,23 +1,12 @@
 package domain;
 
-import com.google.gson.*;
 import com.google.gson.annotations.Expose;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.lang.reflect.Type;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
 public class Order
 {
-    static final Logger logger = LogManager.getLogManager().getLogger(Order.class.getName());
-
     @Expose
     private int orderNr;
     private boolean isStudentOrder;
@@ -44,6 +33,10 @@ public class Order
     {
         tickets.add(ticket);
         updateCounters(ticket);
+    }
+
+    public ArrayList<MovieTicket> getTickets() {
+        return tickets;
     }
 
     private void updateCounters(MovieTicket movieTicket)
@@ -126,36 +119,8 @@ public class Order
         // the ticket to a file with naming convention Order_<orderNr>.txt of
         // Order_<orderNr>.json
 
-        String fileName = "exports/Order_" + orderNr;
-        String extension = (exportFormat == TicketExportFormat.JSON ? ".json" : ".txt");
-
-        try (FileWriter fileWriter = new FileWriter(fileName + extension)) {
-            if(exportFormat == TicketExportFormat.JSON) {
-                // Gson settings
-                Gson gson = new GsonBuilder()
-                        .setPrettyPrinting()
-                        .excludeFieldsWithoutExposeAnnotation()
-                        .registerTypeAdapter(LocalDateTime.class, (JsonSerializer<LocalDateTime>) (LocalDateTime src, Type typeOfSrc, JsonSerializationContext context ) -> new JsonPrimitive(src.toString()))
-                        .serializeNulls()
-                        .disableHtmlEscaping()
-                        .create();
-
-                // Tickets to json file
-                gson.toJson(tickets, fileWriter);
-
-                fileWriter.flush();
-                return;
-            }
-
-            PrintWriter printWriter = new PrintWriter(fileWriter);
-            for (MovieTicket movieTicket: tickets) {
-                printWriter.println(movieTicket.toString());
-            }
-            printWriter.close();
-            fileWriter.flush();
-        } catch (IOException e) {
-            logger.log(Level.WARNING, "Could not open json file", e);
-        }
+        OrderExport orderExport = new OrderExport(this, exportFormat);
+        orderExport.export();
     }
 
     private int calculateFreeTicketCount(int ticketCount)
